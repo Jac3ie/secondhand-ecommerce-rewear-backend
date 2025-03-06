@@ -1,9 +1,9 @@
 package io.muzoo.ssc.project.backend.auth;
 
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
-import io.muzoo.ssc.project.backend.util.AjaxUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +21,13 @@ public class AuthenticationController {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         try{
+            // fixing sequential login bug
+            // check if there is a user logged in, if so log that user out first
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User) {
+                request.logout();
+            }
+
             request.login(username, password);
             return SimpleResponseDTO
                     .builder()
@@ -31,7 +38,7 @@ public class AuthenticationController {
             return SimpleResponseDTO
                     .builder()
                     .success(false)
-                    .message("Failed to log in, incorrect username or password")
+                    .message(e.getMessage())
                     .build();
         }
     }
@@ -49,7 +56,7 @@ public class AuthenticationController {
             return SimpleResponseDTO
                     .builder()
                     .success(false)
-                    .message("Failed to log out")
+                    .message(e.getMessage())
                     .build();
         }
     }
