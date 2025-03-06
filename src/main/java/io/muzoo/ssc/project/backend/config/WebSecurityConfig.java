@@ -1,46 +1,75 @@
 package io.muzoo.ssc.project.backend.config;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-
-//  Adaptation, which may differ from ajarn's demo vdo (due to newer version of Spring)
-//	@Autowired
-//	private OurUserDetailsService ourUserDetailsService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	// Adapted: Define the AuthenticationManager bean using AuthenticationConfiguration
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/", "/home").permitAll()
+		// disable csrf, which normally we don't
+		// Disable CSRF using the lambda DSL style
+		http.csrf(csrf -> csrf.disable());
+
+		// Adapted: configure authorization rules using the lambda DSL
+		http.authorizeHttpRequests(authorize -> authorize
+				// Permit root, /api/login, and /api/logout
+				.requestMatchers("/", "/api/login", "/api/logout").permitAll()
+				// Permit all OPTIONS requests
+				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+				// Require authentication for every other request
 				.anyRequest().authenticated()
-			)
-			.formLogin((form) -> form
-				.loginPage("/login")
-				.permitAll()
-			)
-			.logout((logout) -> logout.permitAll());
+		);
+
+		//handle error output as JSON for unauthorized access
+		http.exceptionHandling(exceptionHandling -> exceptionHandling
+				.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint())
+		);
 
 		return http.build();
 	}
 
-	// Adaptation, which may differ from ajarn's demo vdo
-	// remove this constructor since Spring will automatically register OurUserDetailsService from the @Service annotation.
-	// @Bean
-	// public UserDetailsService userDetailsService() {
-	//     return ourUserDetailsService;
-	// }
+	static class JsonHttp403ForbiddenEntryPoint implements AuthenticationEntryPoint {
+
+		@Override
+		public void commence(HttpServletRequest request,
+							 HttpServletResponse response,
+							 AuthenticationException authException) throws IOException, ServletException {
+			// output JSON message
+			// for now just print String
+			response.getWriter().println("You are not allowed to access this resource!");
+
+		}
+	}
+
 }
