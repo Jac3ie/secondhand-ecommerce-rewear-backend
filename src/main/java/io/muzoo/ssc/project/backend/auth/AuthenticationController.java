@@ -43,7 +43,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/api/logout")
+    @PostMapping("/api/logout") // match the frontend post request
     public SimpleResponseDTO logout(HttpServletRequest request){
         try {
             request.logout();
