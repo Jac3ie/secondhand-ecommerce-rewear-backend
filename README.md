@@ -14,3 +14,9 @@ Sareena Aulla 6481197
 Haicheng Wang 6580244
 
 " This is our backend "
+
+- access remote server with passwordless login
+ssh newuser@152.42.204.118
+- allow ports
+  -> http-https
+  -> 3306
