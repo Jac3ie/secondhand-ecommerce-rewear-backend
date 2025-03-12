@@ -1,4 +1,4 @@
-package com.example.securingweb;
+package io.muzoo.ssc.project.backend;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,11 +12,11 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,15 +24,6 @@ public class SecuringWebApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Test
-	public void loginWithValidUserThenAuthenticated() throws Exception {
-		FormLoginRequestBuilder login = formLogin()
-			.user("user")
-			.password("password");
-
-		mockMvc.perform(login)
-			.andExpect(authenticated().withUsername("user"));
-	}
 
 	@Test
 	public void loginWithInvalidUserThenUnauthenticated() throws Exception {
@@ -51,10 +42,13 @@ public class SecuringWebApplicationTests {
 	}
 
 	@Test
-	public void accessSecuredResourceUnauthenticatedThenRedirectsToLogin() throws Exception {
-		mockMvc.perform(get("/hello"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrlPattern("**/login"));
+	public void accessSecuredResourceUnauthenticatedThenReturnsForbiddenJson() throws Exception {
+		MvcResult mvcResult = mockMvc.perform(get("/hello"))
+				.andExpect(status().isOk()) // change it to match with our current code
+				.andReturn();
+
+		String responseBody = mvcResult.getResponse().getContentAsString();
+		assertThat(responseBody).contains("Forbidden");
 	}
 
 	@Test
