@@ -80,10 +80,12 @@
         </dependency>
     </dependencies>
 
-    <!-- build section -->
+    <!-- Build Section -->
     <build>
+        <!-- Set the final jar name to "webapp.jar" -->
         <finalName>webapp</finalName>
         <plugins>
+            <!-- Maven Compiler Plugin to process Lombok annotations -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -99,6 +101,20 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <!-- Spring Boot Maven Plugin for repackaging the jar -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
