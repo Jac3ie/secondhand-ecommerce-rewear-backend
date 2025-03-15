@@ -25,7 +25,7 @@ public class InitApplicationRunner implements ApplicationRunner {
             admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("123456"));
-            admin.setRole("USER");
+            admin.setRole("admin");
             userRepository.save(admin);
         }
 
