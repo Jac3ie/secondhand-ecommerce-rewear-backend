@@ -3,6 +3,9 @@ package io.muzoo.ssc.project.backend.product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,4 +20,10 @@ public class Product {
     private String description;
     private double price;
     private String pic_url; //store the url in string
+
+    //TODO:not yet have a sold_at param
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/products")
@@ -46,5 +47,12 @@ public class ProductController {
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("File upload failed: " + e.getMessage());
         }
+    }
+
+    //endpoint for get all products
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productRepository.findAll(); //make use of .findAll() from JpaRepo
+        return ResponseEntity.ok(products);
     }
 }
