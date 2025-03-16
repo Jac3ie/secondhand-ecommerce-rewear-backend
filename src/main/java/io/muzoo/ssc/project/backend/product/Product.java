@@ -1,12 +1,8 @@
 package io.muzoo.ssc.project.backend.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Table;
 
 @Entity
 @Getter
@@ -20,5 +16,5 @@ public class Product {
     private String name;
     private String description;
     private double price;
-    private String imageUrl; //store the url in string
+    private String pic_url; //store the url in string
 }

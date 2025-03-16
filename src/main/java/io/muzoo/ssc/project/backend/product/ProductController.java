@@ -21,6 +21,7 @@ public class ProductController {
         this.storageService = storageService;
     }
 
+    //here is the actual endpoint to save form data from frontend to db
     @PostMapping
     public ResponseEntity<?> createProduct(
             @RequestParam MultipartFile image,
@@ -36,7 +37,7 @@ public class ProductController {
             product.setName(name);
             product.setPrice(price);
             product.setDescription(description);
-            product.setImageUrl(imgUrl);
+            product.setPic_url(imgUrl);
 
             //use JpaRepo to save it
             productRepository.save(product);
