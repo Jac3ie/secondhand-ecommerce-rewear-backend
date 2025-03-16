@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.auth;
+package io.muzoo.ssc.project.backend.service;
 
 import io.muzoo.ssc.project.backend.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
