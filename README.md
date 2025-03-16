@@ -17,9 +17,11 @@ ssh newuser@152.42.204.118
 - allow ports
   -> http-https
   -> 3306
-SSC Project - Git ReadMe
 
-# Project Overview
+  
+# SSC Project - Git ReadMe
+
+## Project Overview
 
 SSC is an e-commerce platform featuring distinct functionalities for Admins and Buyers. Admins can manage inventory, assign roles, and track orders, while Buyers can browse and purchase products, completing transactions through a credit card payment system.
 
