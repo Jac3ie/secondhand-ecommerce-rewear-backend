@@ -43,6 +43,8 @@ public class WebSecurityConfig {
 
 		// Adapted: configure authorization rules using the lambda DSL
 		http.authorizeHttpRequests(authorize -> authorize
+				// permit only admin role user can access the /api/admin/**
+				.requestMatchers("/api/admin/**").hasRole("admin")
 				// Permit root, /api/login, and /api/logout, and /api/whoami
 				.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami").permitAll()
 				// Permit all OPTIONS requests
