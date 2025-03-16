@@ -60,9 +60,13 @@ Planned Routes:
 
 **Rule for Payment**
 “Transaction” page will let user fill the address and credit card number
+
         * only 10 digits allowed for credit cards , if it != 10, then the purchase fail
+        
         * if the card started with 111 ….. , then succeeds
+        
         * if the card started with 000 ….., then fails
+        
         * if the card started with other numbers (123,011,999 … ) , then fails
 
 - - - - - - -
