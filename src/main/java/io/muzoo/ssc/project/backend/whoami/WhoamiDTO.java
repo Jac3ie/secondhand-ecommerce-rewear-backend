@@ -14,6 +14,8 @@ public class WhoamiDTO {
 
     private boolean loggedIn = false;
 
+    private boolean isRegistered;  // Register field to indicate if the user is registered
+
     private String username;
 
     private String name;

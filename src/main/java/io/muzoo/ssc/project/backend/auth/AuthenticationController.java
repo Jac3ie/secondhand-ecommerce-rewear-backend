@@ -1,15 +1,22 @@
 package io.muzoo.ssc.project.backend.auth;
-
+import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
+import io.muzoo.ssc.project.backend.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationController {
+
+    @Autowired
+    private UserService userService;
+
 
     @GetMapping("/api/test")
     public String test() {
@@ -24,7 +31,7 @@ public class AuthenticationController {
             // fixing sequential login bug
             // check if there is a user logged in, if so log that user out first
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User) {
+            if (principal instanceof org.springframework.security.core.userdetails.User) {
                 request.logout();
             }
 
@@ -60,5 +67,20 @@ public class AuthenticationController {
                     .build();
         }
     }
-
+    // Registration endpoint
+    @PostMapping("/register")
+    public SimpleResponseDTO register(@RequestBody User user) {
+        boolean isRegistered = userService.registerUser(user);
+        if (isRegistered) {
+            return SimpleResponseDTO.builder()
+                    .success(true)
+                    .message("Registration successful")
+                    .build();
+        } else {
+            return SimpleResponseDTO.builder()
+                    .success(false)
+                    .message("User already exists or registration failed")
+                    .build();
+        }
+    }
 }
