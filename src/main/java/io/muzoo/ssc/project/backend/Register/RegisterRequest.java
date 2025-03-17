@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend;
+package io.muzoo.ssc.project.backend.Register;
 
 
 import lombok.Getter;

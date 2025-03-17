@@ -1,7 +1,7 @@
 package io.muzoo.ssc.project.backend.auth;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.SimpleResponseDTO;
-import io.muzoo.ssc.project.backend.UserService;
+import io.muzoo.ssc.project.backend.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

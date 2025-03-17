@@ -1,8 +1,7 @@
-package io.muzoo.ssc.project.backend.auth;
+package io.muzoo.ssc.project.backend.Register;
 
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
-import io.muzoo.ssc.project.backend.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

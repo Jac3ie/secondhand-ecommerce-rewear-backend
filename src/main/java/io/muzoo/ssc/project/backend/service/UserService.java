@@ -1,5 +1,7 @@
-package io.muzoo.ssc.project.backend;
+package io.muzoo.ssc.project.backend.service;
 
+import io.muzoo.ssc.project.backend.User;
+import io.muzoo.ssc.project.backend.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
