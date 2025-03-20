@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * A controller to retrieve currrently logged-in user.
+ * A controller to retrieve the currently logged-in user.
  */
 @RestController
 public class WhoamiController {
@@ -17,33 +17,37 @@ public class WhoamiController {
     private UserRepository userRepository;
 
     /**
-     * Make sure that all API path begins with /api. This will be useful when we do proxy
+     * Make sure that all API paths begin with /api. This will be useful when we do proxy.
      */
     @GetMapping("/api/whoami")
     public WhoamiDTO whoami() {
-        // Put try-with clause around the statement becuz we use nested dot notation which
-        // could raise a NullPointException
         try {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal != null && principal instanceof org.springframework.security.core.userdetails.User) {
+            if (principal instanceof org.springframework.security.core.userdetails.User) {
 
-                // user is logged in
+                // User is logged in
                 org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) principal;
                 User u = userRepository.findFirstByUsername(user.getUsername());
 
+                // Check if the user is registered (i.e., exists in the database)
+                boolean isRegistered = u != null;
+
                 return WhoamiDTO.builder()
                         .loggedIn(true)
-                        .name(u.getUsername())  // TODO: Example doesn't have a name field but if project needs, we can add here
-                        .role(u.getRole())
-                        .username(u.getUsername())
+                        .name(u != null ? u.getUsername() : null)  // Use username if available
+                        .role(u != null ? u.getRole() : "")  // Default to empty if user is null
+                        .username(u != null ? u.getUsername() : "")
+                        .isRegistered(isRegistered)  // Set the isRegistered field
                         .build();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        // user failed to log in
+
+
         return WhoamiDTO.builder()
                 .loggedIn(false)
+                .isRegistered(false)
                 .build();
-
     }
 }

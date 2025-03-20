@@ -12,11 +12,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.io.IOException;
 
@@ -37,17 +39,19 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+		http.csrf(csrf -> csrf.disable())
+				.cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
 		// disable csrf, which normally we don't
 		// Disable CSRF using the lambda DSL style
-		http.csrf(csrf -> csrf.disable());
+		http.csrf(AbstractHttpConfigurer::disable);
 
 		// Adapted: configure authorization rules using the lambda DSL
 		http.authorizeHttpRequests(authorize -> authorize
 				// permit only admin role user can access the /api/admin/**
 				.requestMatchers("/api/admin/**").hasRole("admin")
 				// Permit root, /api/login, and /api/logout, and /api/whoami
-				.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami").permitAll()
-				// Permit all OPTIONS requests
+				.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami","/api/register").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				// Require authentication for every other request
 				.anyRequest().authenticated()
@@ -67,19 +71,9 @@ public class WebSecurityConfig {
 		public void commence(HttpServletRequest request,
 							 HttpServletResponse response,
 							 AuthenticationException authException) throws IOException, ServletException {
-
-			// output JSON message
-			String ajaxJson = AjaxUtils.convertToString(
-					SimpleResponseDTO
-							.builder()
-							.success(false)
-							.message("Forbidden")
-							.build()
-			);
-			response.setCharacterEncoding("UTF-8");
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			response.setContentType("application/json");
-			response.getWriter().write(ajaxJson);
-
+			response.getWriter().write("{\"success\": false, \"message\": \"Forbidden\"}");
 		}
 	}
 
