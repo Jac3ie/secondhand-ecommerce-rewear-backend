@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.io.IOException;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -39,29 +40,32 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-		http.csrf(csrf -> csrf.disable())
-				.cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
-		// disable csrf, which normally we don't
-		// Disable CSRF using the lambda DSL style
-		http.csrf(AbstractHttpConfigurer::disable);
-
-		// Adapted: configure authorization rules using the lambda DSL
-		http.authorizeHttpRequests(authorize -> authorize
-				// permit only admin role user can access the /api/admin/**
-				.requestMatchers("/api/admin/**").hasRole("admin")
-				// Permit root, /api/login, and /api/logout, and /api/whoami
-				.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami","/api/register").permitAll()
-				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				// Require authentication for every other request
-				.anyRequest().authenticated()
-		);
-
-		//handle error output as JSON for unauthorized access
-		http.exceptionHandling(exceptionHandling -> exceptionHandling
-				.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint())
-		);
-
+		http
+				// Disable CSRF for API (or handle it properly in production)
+				.csrf(AbstractHttpConfigurer::disable)
+				// Configure CORS with custom settings
+				.cors(cors -> cors.configurationSource(request -> {
+					CorsConfiguration config = new CorsConfiguration();
+					// Allow only your domain – adjust as needed
+					config.setAllowedOrigins(List.of("https://sscrewear.store"));
+					config.setAllowedMethods(List.of("*"));
+					config.setAllowedHeaders(List.of("*"));
+					config.setAllowCredentials(true);
+					return config;
+				}))
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						// Public endpoints
+						.requestMatchers("/", "/api/login", "/api/logout", "/api/whoami", "/api/register", "/api/products").permitAll()
+						// Admin endpoints
+						.requestMatchers("/api/admin/**").hasRole("admin")
+						// Require authentication for all other requests
+						.anyRequest().authenticated()
+				)
+				// Return JSON error response on unauthorized access
+				.exceptionHandling(exceptionHandling -> exceptionHandling
+						.authenticationEntryPoint(new JsonHttp403ForbiddenEntryPoint())
+				);
 		return http.build();
 	}
 
