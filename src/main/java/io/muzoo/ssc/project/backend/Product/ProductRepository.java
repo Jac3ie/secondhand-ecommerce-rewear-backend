@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.Product;
+package io.muzoo.ssc.project.backend.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

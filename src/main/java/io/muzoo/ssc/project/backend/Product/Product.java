@@ -1,4 +1,4 @@
-package io.muzoo.ssc.project.backend.Product;
+package io.muzoo.ssc.project.backend.product;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +24,6 @@ public class Product {
     //TODO:not yet have a sold_at param
 
     @CreationTimestamp
-    @Column(name = "sold_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
