@@ -1,6 +1,7 @@
 package io.muzoo.ssc.project.backend.product;
 
 import io.muzoo.ssc.project.backend.service.StorageService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,10 @@ public class ProductController {
             @RequestParam(required = false) String description) {
         try{
             //upload image and get the url from bucket
+            System.out.println("Uploading image...");
             String imgUrl = storageService.uploadFile(image);
-
+            System.out.println("Image uploaded: " + imgUrl);
+            // Debug : Check if image uploads successfully
             //initiate Product instance for save
             Product product = new Product();
             product.setName(name);
@@ -45,7 +48,7 @@ public class ProductController {
 
             return ResponseEntity.ok(product);
         } catch (IOException e) {
-            return ResponseEntity.badRequest().body("File upload failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create product: " + e.getMessage());
         }
     }
 
