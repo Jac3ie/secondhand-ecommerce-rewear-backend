@@ -27,14 +27,24 @@ public class BuyerProductController {
     }
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts(@RequestParam(value = "query", required = false) String query) {
-        List<Product> products;
+        List<Product> products = productRepository.findAll();
 
         if (query != null && !query.isEmpty()) {
-            products = productRepository.searchByName(query);
-        } else {
-            products = productRepository.findAll();
+            String lowerQuery = query.toLowerCase();
+            products = products.stream()
+                    .filter(product -> isConsecutiveMatch(product.getName().toLowerCase(), lowerQuery))
+                    .toList();
         }
 
         return ResponseEntity.ok(products);
+    }
+
+    private boolean isConsecutiveMatch(String name, String query) {
+        int index = 0;
+        for (char c : name.toCharArray()) {
+            if (c == query.charAt(index)) index++;
+            if (index == query.length()) return true;
+        }
+        return false;
     }
 }
