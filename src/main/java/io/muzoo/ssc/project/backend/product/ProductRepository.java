@@ -2,6 +2,8 @@ package io.muzoo.ssc.project.backend.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
     //this interface just to extend JpaRepo to get CRUD operations
     //with this, when we call instance of ProductRepository
@@ -10,4 +12,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //.findAll()
     //.deleteById(Long id)
     //.count()
+    List<Product> findByName(String name, String description);
 }

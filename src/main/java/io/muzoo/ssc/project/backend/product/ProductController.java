@@ -96,4 +96,17 @@ public class ProductController {
             return ResponseEntity.ok("Product deleted successfully");
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam(value = "query", required = false) String query) {
+        List<Product> products;
+
+        if (query != null && !query.isEmpty()) {
+            products = productRepository.findByName(query, query);
+        } else {
+            products = productRepository.findAll();
+        }
+
+        return ResponseEntity.ok(products);
+    }
 }
