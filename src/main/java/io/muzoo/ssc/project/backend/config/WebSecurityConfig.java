@@ -47,7 +47,7 @@ public class WebSecurityConfig {
 				.cors(cors -> cors.configurationSource(request -> {
 					CorsConfiguration config = new CorsConfiguration();
 					// Allow only your domain – adjust as needed
-					config.setAllowedOrigins(List.of("https://sscrewear.store"));
+					config.setAllowedOrigins(List.of("https://sscrewear.store", "http://localhost:3000"));
 					config.setAllowedMethods(List.of("*"));
 					config.setAllowedHeaders(List.of("*"));
 					config.setAllowCredentials(true);
