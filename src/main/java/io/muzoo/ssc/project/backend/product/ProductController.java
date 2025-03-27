@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/products")
@@ -96,4 +97,16 @@ public class ProductController {
             return ResponseEntity.ok("Product deleted successfully");
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/api/products/{id}/sold")
+    public ResponseEntity<?> markProductAsSold(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setPurchasedBy("buyer-id");
+        productRepository.save(product);
+
+        return ResponseEntity.ok().body(Map.of("message", "Product marked as sold"));
+    }
+
 }

@@ -20,6 +20,7 @@ public class Product {
     private String description;
     private double price;
     private String pic_url; //store the url in string
+    private String purchasedBy;
 
     //TODO:not yet have a sold_at param
 
