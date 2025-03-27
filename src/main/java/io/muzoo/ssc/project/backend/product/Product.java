@@ -22,7 +22,8 @@ public class Product {
     private String pic_url; //store the url in string
     private String purchasedBy;
 
-    //TODO:not yet have a sold_at param
+    @Column(name = "sold_at")
+    private LocalDateTime soldAt;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

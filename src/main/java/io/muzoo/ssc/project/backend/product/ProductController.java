@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -98,15 +99,15 @@ public class ProductController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/api/products/{id}/sold")
+    @PostMapping("/{id}/sold")
     public ResponseEntity<?> markProductAsSold(@PathVariable Long id, @RequestBody Map<String, String> request) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        product.setPurchasedBy("buyer-id");
+        product.setPurchasedBy(request.get("buyerId"));
+        product.setSoldAt(LocalDateTime.now());
         productRepository.save(product);
 
-        return ResponseEntity.ok().body(Map.of("message", "Product marked as sold"));
+        return ResponseEntity.ok(Map.of("message", "Product marked as sold"));
     }
-
 }
