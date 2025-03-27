@@ -1,5 +1,7 @@
 package io.muzoo.ssc.project.backend.product;
 
+import io.muzoo.ssc.project.backend.User;
+import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.service.StorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin/products")
@@ -100,14 +103,23 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/sold")
-    public ResponseEntity<?> markProductAsSold(@PathVariable Long id, @RequestBody Map<String, String> request) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+    public ResponseEntity<?> markProductAsSold(@PathVariable Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
 
-        product.setPurchasedBy(request.get("buyerId"));
-        product.setSoldAt(LocalDateTime.now());
-        productRepository.save(product);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
 
-        return ResponseEntity.ok(Map.of("message", "Product marked as sold"));
+            if (product.getSoldAt() != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product already sold.");
+            }
+
+            product.setSoldAt(LocalDateTime.now());
+
+            productRepository.save(product);
+
+            return ResponseEntity.ok("Product marked as sold.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found.");
+        }
     }
 }
