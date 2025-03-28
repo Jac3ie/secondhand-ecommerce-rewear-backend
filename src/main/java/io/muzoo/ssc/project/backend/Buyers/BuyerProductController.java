@@ -1,23 +1,27 @@
 package io.muzoo.ssc.project.backend.Buyers;
 
+import io.muzoo.ssc.project.backend.User;
+import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.product.Product;
 import io.muzoo.ssc.project.backend.product.ProductRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
 public class BuyerProductController {
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public BuyerProductController(ProductRepository productRepository) {
+    public BuyerProductController(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -47,4 +51,31 @@ public class BuyerProductController {
         }
         return false;
     }
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<?> purchaseProduct(@PathVariable Long id, @RequestParam Long userId) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (productOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found.");
+        }
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
+        }
+
+        Product product = productOptional.get();
+
+        if (product.getSoldAt() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product already sold.");
+        }
+
+        product.setSoldAt(LocalDateTime.now());
+        product.setPurchasedBy(userOptional.get());  // Update purchased_by field
+
+        productRepository.save(product);
+
+        return ResponseEntity.ok("Product purchased successfully by user ID: " + userId);
+    }
+
 }

@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //.deleteById(Long id)
     //.count()
     List<Product> searchByName(@Param("query") String query);
+
 }
