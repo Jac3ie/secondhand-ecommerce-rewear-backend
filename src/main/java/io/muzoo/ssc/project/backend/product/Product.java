@@ -1,5 +1,6 @@
 package io.muzoo.ssc.project.backend.product;
 
+import io.muzoo.ssc.project.backend.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,12 +21,16 @@ public class Product {
     private String description;
     private double price;
     private String pic_url; //store the url in string
-    private String purchasedBy;
 
     @Column(name = "sold_at")
     private LocalDateTime soldAt;
 
+    @ManyToOne
+    @JoinColumn(name = "purchased_by", referencedColumnName = "id")
+    private User purchasedBy;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
 }
