@@ -1,5 +1,6 @@
 package io.muzoo.ssc.project.backend.product;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.muzoo.ssc.project.backend.User;
 import io.muzoo.ssc.project.backend.UserRepository;
 import io.muzoo.ssc.project.backend.service.StorageService;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,22 +33,26 @@ public class ProductController {
     //here is the actual endpoint to save form data from frontend to db
     @PostMapping
     public ResponseEntity<?> createProduct(
-            @RequestParam MultipartFile image,
+            @RequestParam List<MultipartFile> images,
             @RequestParam String name,
             @RequestParam double price,
             @RequestParam(required = false) String description) {
         try{
-            //upload image and get the url from bucket
-            System.out.println("Uploading image...");
-            String imgUrl = storageService.uploadFile(image);
-            System.out.println("Image uploaded: " + imgUrl);
-            // Debug : Check if image uploads successfully
+            List<String> urlArr = new ArrayList<>();
+            for (MultipartFile file : images) {
+                String imgUrl = storageService.uploadFile(file);
+                urlArr.add(imgUrl);
+            }
             //initiate Product instance for save
             Product product = new Product();
             product.setName(name);
             product.setPrice(price);
             product.setDescription(description);
-            product.setPic_url(imgUrl);
+
+            // all images are in side of list right now, and we store this list
+            // as a JSON String to match the database setting => pic_url(String)
+            String jsonUrls = new ObjectMapper().writeValueAsString(urlArr);
+            product.setPic_url(jsonUrls);
 
             //use JpaRepo to save it
             productRepository.save(product);
