@@ -1,74 +1,73 @@
 # ssc-y24t2-backend-import-ai-copliot
+
 ssc-y24t2-backend-import-ai-copliot created by GitHub Classroom
 
-Group Name: Import AI.Copilot
+## Group Name: Import AI.Copilot
 
-Members:
+### Members:
+- Chinanard Sathitseth 6481366
+- Hanna Hahn 6481334
+- Sareena Aulla 6481197
+- Haicheng Wang 6580244
 
-Chinanard Sathitseth 6481366
-
-Hanna Hahn 6481334 
-
-Sareena Aulla 6481197
-
-Haicheng Wang 6580244
-- access remote server with passwordless login
+## Access Remote Server with Passwordless Login
+```sh
 ssh newuser@152.42.204.118
-- allow ports
-  -> http-https
-  -> 3306
+```
 
-  
+## Allow Ports
+- HTTP and HTTPS
+- 3306
+
 # SSC Project - Git ReadMe
 
 ## Project Overview
-
 SSC is an e-commerce platform featuring distinct functionalities for Admins and Buyers. Admins can manage inventory, assign roles, and track orders, while Buyers can browse and purchase products, completing transactions through a credit card payment system.
 
-
-### Features & TODO List
-
-
+## Features & TODO List
 - Login & Register
-
 - Admin Homepage 
-
-- Buyer Homepage 
-
+- Buyer Homepage which includes Dashboard
 - Transaction page
-
 - Shipping Status page
-  
+- Order Summary Page
 
-### Routes Implementation
+### Login and Register
+Login and register functionalities are combined into a single page.
 
-Planned Routes:
+## Payment Rules
+The "Transaction" page allows users to fill in the address and credit card number. Validation rules include:
+- Only 10-digit card numbers are allowed. If it is not 10 digits, the purchase fails.
+- If the card number starts with **111**, the purchase succeeds.
+- If the card number starts with any other number (e.g., 123, 011, 999), the purchase fails.
 
-/login - User authentication page.
+## Access Control and Redirection
+- Unauthorized users attempting to access non-existent or restricted pages are automatically redirected to the buyer homepage.
+- Users must log in before accessing any resources; otherwise, they are redirected to the login page.
+- New users are automatically assigned the "Buyer" role upon registration.
+- If a user does not exist, they must register before accessing any pages.
+- Only Admins can access `/admin-home` to manage products and grant user roles.
 
-/register - Registration page for Buyers.
+## Credit Card Validation
+- Only 10-digit card numbers are allowed.
+- Buyers must fill in the cardholder name, CVC number, and expiration date.
+- Card number prefix validation rules apply.
+- A randomized tracking number is auto-generated.
+- After a successful transaction, the order is placed and shipped.
 
-<ins> login and register in the same page </ins>
+## Tools & Technology Stack
+### Development Tools & IDEs
+- Version Control: GitHub
+- IDEs: WebStorm (for Vue.js), IntelliJ IDEA (for Spring Boot), Visual Studio
 
-/home -> Buyer homepage with product listings.
+### Backend
+- Framework: Spring Boot 3.3.0
+- Security: Spring Security, Thymeleaf Extras for Spring Security
+- Data Management: Spring Data JPA, Spring Data JDBC, Spring Boot Data REST
+- Database: MariaDB
 
-/admin-home -> Admin dashboard with edit/add products and order tracking and role assignments.
+### Hosting & Cloud Services
+- Virtual Machine: DigitalOcean
+- Cloud Storage: Google Cloud Storage (for image management)
+- Storage Integration: Spring Cloud GCP Storage
 
-/transaction -> Checkout and payment processing page.
-
-/shipped -> show that order is paid and shipped with "randomized" generated tracking numbers. and "Back to Home" function to redirect to home page
-
-**Rule for Payment**
-“Transaction” page will let user fill the address and credit card number
-
-        * only 10 digits allowed for credit cards , if it != 10, then the purchase fail
-        
-        * if the card started with 111 ….. , then succeeds
-        
-        * if the card started with 000 ….., then fails
-        
-        * if the card started with other numbers (123,011,999 … ) , then fails
-
-- - - - - - -
-> 16 Mar 2025 
-- - - - - - -
