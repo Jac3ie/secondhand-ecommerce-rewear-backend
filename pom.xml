@@ -98,6 +98,12 @@
             <artifactId>spring-cloud-gcp-starter-storage</artifactId>
             <version>1.2.8.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
     </dependencies>
 
     <!-- Build Section -->
