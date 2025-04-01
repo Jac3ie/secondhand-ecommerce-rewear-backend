@@ -24,10 +24,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/api/login")
-    public SimpleResponseDTO login(HttpServletRequest request){
+    public SimpleResponseDTO login(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        try{
+        try {
             // fixing sequential login bug
             // check if there is a user logged in, if so log that user out first
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -41,7 +41,7 @@ public class AuthenticationController {
                     .success(true)
                     .message("You are successfully log in")
                     .build();
-        } catch (ServletException e){
+        } catch (ServletException e) {
             return SimpleResponseDTO
                     .builder()
                     .success(false)

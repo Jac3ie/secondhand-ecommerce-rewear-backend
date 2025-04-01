@@ -6,10 +6,14 @@ import io.muzoo.ssc.project.backend.product.Product;
 import io.muzoo.ssc.project.backend.product.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -51,31 +55,39 @@ public class BuyerProductController {
         }
         return false;
     }
-    @PostMapping("/{id}/purchase")
-    public ResponseEntity<?> purchaseProduct(@PathVariable Long id, @RequestParam Long userId) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        Optional<User> userOptional = userRepository.findById(userId);
 
-        if (productOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found.");
+    @PostMapping("/{productId}/purchase")
+    public ResponseEntity<?> purchaseProduct(@PathVariable Long productId, @RequestBody Map<String, Object> payload) {
+        if (!payload.containsKey("userId") || !payload.containsKey("sold_at")) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Missing userId or sold_at"));
         }
 
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found.");
+        try {
+            Long userId = ((Number) payload.get("userId")).longValue();
+            LocalDateTime soldAt = LocalDateTime.parse((String) payload.get("sold_at"));
+
+            Optional<User> user = userRepository.findById(userId);
+            Optional<Product> product = productRepository.findById(productId);
+
+            if (user.isPresent() && product.isPresent()) {
+                Product purchasedProduct = product.get();
+
+                if (purchasedProduct.getSoldAt() != null) { // Prevent duplicate purchases
+                    return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Product already sold"));
+                }
+
+                purchasedProduct.setSoldAt(soldAt);
+                purchasedProduct.setPurchasedBy(user.get());
+                productRepository.save(purchasedProduct);
+
+                return ResponseEntity.ok(Map.of("success", true, "message", "Purchase successful"));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("success", false, "message", "User or product not found"));
+            }
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Invalid date format for sold_at"));
         }
-
-        Product product = productOptional.get();
-
-        if (product.getSoldAt() != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product already sold.");
-        }
-
-        product.setSoldAt(LocalDateTime.now());
-        product.setPurchasedBy(userOptional.get());  // Update purchased_by field
-
-        productRepository.save(product);
-
-        return ResponseEntity.ok("Product purchased successfully by user ID: " + userId);
     }
 
 }
