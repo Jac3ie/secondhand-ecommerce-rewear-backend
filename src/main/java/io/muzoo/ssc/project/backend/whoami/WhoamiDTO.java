@@ -11,6 +11,7 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class WhoamiDTO {
+    private Long id; // Include user ID
 
     private boolean loggedIn = false;
 
@@ -21,5 +22,6 @@ public class WhoamiDTO {
     private String name;
 
     private String role;
+
 
 }

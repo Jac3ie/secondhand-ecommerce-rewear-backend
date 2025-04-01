@@ -33,6 +33,7 @@ public class WhoamiController {
                 boolean isRegistered = u != null;
 
                 return WhoamiDTO.builder()
+                        .id(isRegistered ? u.getId() : null) // Return User ID
                         .loggedIn(true)
                         .name(u != null ? u.getUsername() : null)  // Use username if available
                         .role(u != null ? u.getRole() : "")  // Default to empty if user is null
