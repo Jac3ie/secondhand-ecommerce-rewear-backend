@@ -20,7 +20,10 @@ public class Product {
     private String name;
     private String description;
     private double price;
-    private String pic_url; //store the url in string
+
+    //modified string length to adapt when Json String is too long, typically when images are more than 3 from test
+    @Column(name = "pic_url", columnDefinition = "TEXT")
+    private String pic_url;
 
     @Column(name = "sold_at")
     private LocalDateTime soldAt;
