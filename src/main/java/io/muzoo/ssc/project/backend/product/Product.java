@@ -1,5 +1,6 @@
 package io.muzoo.ssc.project.backend.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.muzoo.ssc.project.backend.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class Product {
     private String pic_url;
 
     @Column(name = "sold_at")
+    @JsonProperty("sold_at")
     private LocalDateTime soldAt;
 
     @ManyToOne
