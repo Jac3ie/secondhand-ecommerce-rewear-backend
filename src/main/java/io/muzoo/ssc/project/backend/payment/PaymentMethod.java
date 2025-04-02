@@ -4,10 +4,8 @@ import io.muzoo.ssc.project.backend.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

@@ -60,7 +60,7 @@ public class PaymentService {
     }
 
     private String generateMasked(String card) {
-        return card.substring(0, 3) + "X-XXXX-" + card.substring(9);
+        return card.substring(0, 3) + "X-XXXX-" + card.substring(9, 10);
     }
 
     private Date convertExpiry(PaymentMethodDTO request) {
