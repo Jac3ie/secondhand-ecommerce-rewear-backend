@@ -28,7 +28,4 @@ public class Address {
 
     @Column(name = "postal_code", nullable = false, length = 5)
     private String postalCode;
-
-    @Column(name = "is_default", columnDefinition = "TINYINT(1) DEFAULT 1")
-    private Boolean isDefault;
 }
