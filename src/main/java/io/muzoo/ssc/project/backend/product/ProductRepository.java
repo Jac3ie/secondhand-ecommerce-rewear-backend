@@ -15,7 +15,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //.deleteById(Long id)
     //.count()
     List<Product> searchByName(@Param("query") String query);
+    List<Product> findBySoldAtIsNotNull();
 
     List<Product> findByPurchasedBy(User user);
+
 
 }

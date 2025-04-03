@@ -107,5 +107,13 @@ public class ProductController {
             return ResponseEntity.ok("Product deleted successfully");
         }).orElse(ResponseEntity.notFound().build());
     }
-    
+
+    @GetMapping("/sold")
+    public ResponseEntity<List<Product>> getSoldProducts() {
+        List<Product> soldProducts = productRepository.findBySoldAtIsNotNull();
+        if (soldProducts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(soldProducts);
+    }
 }
