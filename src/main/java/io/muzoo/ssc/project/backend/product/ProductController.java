@@ -107,25 +107,5 @@ public class ProductController {
             return ResponseEntity.ok("Product deleted successfully");
         }).orElse(ResponseEntity.notFound().build());
     }
-
-    @PostMapping("/{id}/sold")
-    public ResponseEntity<?> markProductAsSold(@PathVariable Long id) {
-        Optional<Product> productOptional = productRepository.findById(id);
-
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-
-            if (product.getSoldAt() != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product already sold.");
-            }
-
-            product.setSoldAt(LocalDateTime.now());
-
-            productRepository.save(product);
-
-            return ResponseEntity.ok("Product marked as sold.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found.");
-        }
-    }
+    
 }
