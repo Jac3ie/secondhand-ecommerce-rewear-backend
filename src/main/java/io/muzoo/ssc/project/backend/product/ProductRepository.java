@@ -1,5 +1,6 @@
 package io.muzoo.ssc.project.backend.product;
 
+import io.muzoo.ssc.project.backend.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -14,5 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //.deleteById(Long id)
     //.count()
     List<Product> searchByName(@Param("query") String query);
+
+    List<Product> findByPurchasedBy(User user);
 
 }
