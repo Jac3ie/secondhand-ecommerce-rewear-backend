@@ -22,7 +22,7 @@ public class RegistrationController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/api/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody RegisterRequestDTO registerRequest) {
         Map<String, Object> response = new HashMap<>();
 
         // Check if username already exists
@@ -36,9 +36,7 @@ public class RegistrationController {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));  // Encrypt the password
-        if (user.getRole() == null) {
-            user.setRole("buyer"); // Assign a default role
-        }
+        user.setRole("buyer"); // Assign a default role since does not have admin register
         userRepository.save(user);
 
         response.put("success", true);

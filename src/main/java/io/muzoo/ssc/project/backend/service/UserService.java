@@ -15,19 +15,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // Register a new user
-    public boolean registerUser(User user) {
-        if (userRepository.findFirstByUsername(user.getUsername()) != null) {
-            return false; // Username is taken
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return true;  // Successfully registered
-    }
-
     // Grant admin role to a user
     public User grantAdminRole(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
