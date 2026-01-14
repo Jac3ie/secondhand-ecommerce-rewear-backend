@@ -1,0 +1,24 @@
+server.port=8081
+gcp.bucket.name={GCS_BUCKET_NAME}
+
+# deploy bucket configuration
+#spring.cloud.gcp.project-id={GCS_PROJECT_ID}
+#gcp.bucket.name=${GCS_BUCKET_NAME}
+#spring.cloud.gcp.storage.credentials.location=file:${GOOGLE_APPLICATION_CREDENTIALS}
+
+spring.jpa.hibernate.ddl-auto=update
+
+#upload picture size limit
+spring.servlet.multipart.max-file-size={DESIRED_FILE_SIZE} # e.g. 10MB
+spring.servlet.multipart.max-request-size={DESIRED_FILE_SIZE}
+server.tomcat.max-swallow-size={DESIRED_FILE_SIZE}
+
+#local version to work
+#click the left database icon to connect to this db, try test connection
+spring.datasource.url={DB_URL}
+
+#deploy version for database setting
+#spring.datasource.url={DB_URL}
+
+spring.datasource.username={DB_USER}
+spring.datasource.password={DB_PWD}
