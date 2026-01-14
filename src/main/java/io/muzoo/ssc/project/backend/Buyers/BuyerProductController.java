@@ -21,11 +21,9 @@ import java.util.Optional;
 public class BuyerProductController {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
 
-    public BuyerProductController(ProductRepository productRepository, UserRepository userRepository) {
+    public BuyerProductController(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -54,40 +52,6 @@ public class BuyerProductController {
             if (index == query.length()) return true;
         }
         return false;
-    }
-
-    @PostMapping("/{productId}/purchase")
-    public ResponseEntity<?> purchaseProduct(@PathVariable Long productId, @RequestBody Map<String, Object> payload) {
-        if (!payload.containsKey("userId") || !payload.containsKey("sold_at")) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Missing userId or sold_at"));
-        }
-
-        try {
-            Long userId = ((Number) payload.get("userId")).longValue();
-            LocalDateTime soldAt = LocalDateTime.parse((String) payload.get("sold_at"));
-
-            Optional<User> user = userRepository.findById(userId);
-            Optional<Product> product = productRepository.findById(productId);
-
-            if (user.isPresent() && product.isPresent()) {
-                Product purchasedProduct = product.get();
-
-                if (purchasedProduct.getSoldAt() != null) { // Prevent duplicate purchases
-                    return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Product already sold"));
-                }
-
-                purchasedProduct.setSoldAt(soldAt);
-                purchasedProduct.setPurchasedBy(user.get());
-                productRepository.save(purchasedProduct);
-
-                return ResponseEntity.ok(Map.of("success", true, "message", "Purchase successful"));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("success", false, "message", "User or product not found"));
-            }
-        } catch (DateTimeParseException e) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Invalid date format for sold_at"));
-        }
     }
 
 }
