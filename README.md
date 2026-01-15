@@ -1,5 +1,7 @@
 # Secondhand E-commerce Platform - Brand Name: Rewear
 
+## Frontend repository: [Frontend Repo](https://github.com/Jac3ie/secondhand-ecommerce-rewear-frontend.git)
+
 ## Group Name: Import AI.Copilot
 
 ### Members:
@@ -8,22 +10,23 @@
 - Sareena Aulla 6481197 
 - Haicheng Wang 6580244
 
-# README
+## Overview
+Backend for **Rewear**, a second-hand e-commerce web app providing REST APIs for admin / buyer experiences.
 
-## Project Overview
-Rewear is an e-commerce platform featuring different functionalities for Admins and Buyers. Admins can do CRUD to products; manage inventory; assign admin-role to normal user; and track orders.
-while Buyers can browse and purchase products, completing transactions through a similated and simplified credit card payment system, also saving payment method for quicker purchase next time.
+### What this backend does
+- Provides **session-based authentication** and role-based endpoints using **Spring Security**.
+- Exposes REST APIs for:
+  - **Admin**: product management (CRUD), sold product review, list all buyers to uplift priviledges
+  - **Buyer**: product browsing + search, checkout/purchase flow (simulated)
+  - **Account**: address management, payment method save/retrieve, order history
+- Persists data in **MariaDB** via **Spring Data JPA**, and integrates **Google Cloud Storage (GCS)** for product image upload/access.
 
-## Features
-- Login & Register
-- Admin Homepage 
-- Buyer Homepage which includes Dashboard
-- Transaction Page
-- Order Summary Page
-- Account-level Order History Review
-
-### Login and Register
-Login and register functionalities are combined into a single page.
+## Tech Stack (Backend)
+- Spring Boot 3
+- Spring Security (session-based auth)
+- Spring Data JPA (Hibernate) + MariaDB JDBC driver
+- MariaDB running on Docker
+- GCS for image storage
 
 ## Payment Rules
 > Note: This project simulated transactions for course demonstration, not a real payment integration.
@@ -46,18 +49,6 @@ The "Transaction" page allows users to fill in the address and credit card numbe
 - Card number prefix validation rules apply.
 - A randomized tracking number is auto-generated.
 - After a successful transaction, the order is placed and shipped.
-
-## Tools & Tech Stack
-### Development Tools & IDEs
-- Version Control: **Git**
-- IDEs: **WebStorm (for Vue.js), IntelliJ IDEA (for Spring Boot)**
-
-### Backend
-- Framework: **Spring Boot 3**
-- Security: **Spring Security**
-- Cloud Storage: **Google Cloud Storage** (for image management)
-- Database: **MariaDB** running locally inside of a Docker container 
-- Data Management: **Spring Boot Data REST, Spring Data JPA (Hibernate) with the MariaDB JDBC driver**
 
 ## API Overview
 
@@ -89,7 +80,7 @@ Default: `http://localhost:8081`
 - `GET /api/address`
 - `POST /api/address`
 
-### Payment (Simulated)
+### Payment
 - `GET /api/payments`
 - `POST /api/payments`
 - `POST /api/payments/purchase/{productId}`
